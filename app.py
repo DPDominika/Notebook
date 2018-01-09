@@ -2,7 +2,6 @@ import sys
 import query as query
 import words as word
 
-
 class ExitCommand:
 
     def run(self):
@@ -14,6 +13,7 @@ class NewTaskCommand:
         self.user_name = user_name
         self.user_surname = user_surname
 
+
     def run(self):
         task = word.create_task()
         user_task = query.create_task(task['created_at'], task['name'], task['description'], end_at=None)
@@ -23,7 +23,7 @@ class NewTaskCommand:
 
 COMMANDS = [
     ExitCommand(),
-    NewTaskCommand(user_name, user_surname)
+    NewTaskCommand()
     ]
 
 def run_menu():
@@ -41,16 +41,15 @@ def start_app():
         user_1 = query.create_user(user['name'], user['surname'], user['email'])
 
     elif answer == 'yes':
-        users_list = query.show_users()
-        log_details = word.logon(users_list)
-        user_name = log_details['name_surname'][0]
-        user_surname = log_details['name_surname'][1]
+        log_details = word.logon(user_registry)
+        user_name = log_details['name'][0]
+        user_surname = log_details['surname'][1]
 
 
     while True:
         run_menu()
 
-
+print(run)
 
 
 
@@ -62,7 +61,7 @@ def start_app():
     #     word.create_task_note()
     # return user_task_2
 
-print(start_app())
+
 
 # def run_words():
 #     account = word.create_account()

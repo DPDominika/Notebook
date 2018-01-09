@@ -137,5 +137,5 @@ def menu_to_manage_tasks():
 # print(logon(['Dominika Pleśniak', 'Jan Kowalski']))
 # user = logon(['Dominika Pleśniak', 'Jan Kowalski'])
 # print(user)
-user_registry = UserRegistryDB()
-print(logon(user_registry))
+# user_registry = UserRegistryDB()
+# print(logon(user_registry))
