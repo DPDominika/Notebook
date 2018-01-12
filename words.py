@@ -44,7 +44,6 @@ def logon(user_registry):
 #     return {'name_surname': name_surname.split(' ')}
 
 def create_user(email_list):
-    email = ''
     print('Create an account')
     name = input('name: ')
     surname = input('surname: ')
@@ -60,14 +59,6 @@ def create_user(email_list):
             'email': email}
 
 
-def if_create_task():
-    answer = input('Do you want to create a new task?: ')
-    while answer.lower() != 'yes' and answer.lower() != 'no':
-        print("Please, answer 'yes' or 'no'")
-        answer = input('Do you want to create a new task?: ')
-    return answer == 'yes'
-
-
 def create_task():
     created_at = datetime.now()
     name = input('Create a task name: ')
@@ -80,38 +71,24 @@ def create_task():
             'description': description}
 
 
+def create_note():
+    return input('Add a note for the task: ')
+
+
 def create_task_note():
-    text = input('Add a note for the task: ')
-    return {'text': text}
-
-
-def if_create_task_note():
     choice = None
-    while choice != 'q' and choice != 'y':
-        print("Choose 'y' to add note to your task or 'q' to quit the application")
+    while choice != 'm' and choice != 'y':
+        print("Choose 'y' to add note to your task or 'm' to return to menu")
         choice = input('Your choice: ')
 
-    if choice == 'q':
-        return 'the end'
+    if choice == 'm':
+        return menu_to_manage_tasks()
     elif choice == 'y':
-        return create_task_note()
-
-#
-# def activate_menu():
-#     choice = None
-#     while choice != 'q' and choice != 'y':
-#         print("Choose 'y' to show a DP-Note menu or 'q' to quit the application")
-#         choice = input('Your choice: ')
-#
-#     if choice == 'q':
-#         return 'the end'
-#     elif choice == 'y':
-#         return menu_to_manage_tasks()
+        return create_note()
 
 
 def menu_to_manage_tasks():
-    choice = None
-    while choice != '0':
+    while True:
         print(
         """
         0 - exit
@@ -123,13 +100,19 @@ def menu_to_manage_tasks():
         6 - delete a task
         """
         )
-        choice = int(input('Choose number 0-4 to manage your tasks: '))
+        choice = int(input('Choose number 0-6 to manage your tasks: '))
 
-        if choice == 0:
-            return 0
-        elif int(choice) in range(1,7):
-            return int(choice)
+        if choice in range(0,7):
+            return choice
 
+
+def edit_task():
+    description = input('Modify the task description: ')
+    text = input('Modify the task note: ')
+    end_at = input('Add the end date: ')
+    return {'description': description,
+            'text': text,
+            'ecd_at': end_at}
 
 
 
@@ -139,3 +122,7 @@ def menu_to_manage_tasks():
 # print(user)
 # user_registry = UserRegistryDB()
 # print(logon(user_registry))
+# print(create_task())
+# print(create_task_note())
+# print(ask_create_task_note())
+# print(menu_to_manage_tasks())

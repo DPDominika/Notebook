@@ -15,20 +15,47 @@ class NewTaskCommand:
 
 
     def run(self):
-        task = word.create_task()
-        user_task = query.create_task(task['created_at'], task['name'], task['description'], end_at=None)
-        user_task_2 = query.assign_task_to_user(user_task, user_name=self.user_name, user_surname=self.user_surname)
-        word.if_create_task_note()
-        word.create_task_note()
+        task_word = word.create_task()
+        task = query.create_task(task_word['created_at'], task_word['name'], task_word['description'], end_at=None)
+        query.assign_task_to_user(task, user_name=self.user_name, user_surname=self.user_surname)
+        text = word.create_task_note()
+        task_id = query.get_task_id(self.user_name, self.user_surname, task_word['name'])
+        query.create_note_for_task(task_id, text)
 
-COMMANDS = [
-    ExitCommand(),
-    NewTaskCommand()
-    ]
+class EditTaskCommand:
 
-def run_menu():
+    def __init__(self, user_name, user_surname):
+        self.user_name = user_name
+        self.user_surname = user_surname
+
+    def run(self):
+        word.edit_task() # w części words dopisać wybór taska do modyfikacji
+        query.update_description(self.user_name, self.user_surname, task_name, new_description)
+
+
+class ShowTasksCommand:
+
+    def __init__(self, user_name, user_surname):
+        self.user_name = user_name
+        self.user_surname = user_surname
+
+    def run(self):
+        query.show_all_tasks(self.user_name, self.user_surname)
+
+
+class ShowActiveTasksCommand:
+
+    def __init__(self, user_name, user_surname):
+        self.user_name = user_name
+        self.user_surname = user_surname
+
+    def run(self):
+        query.show_active_tasks(self.user_name, self.user_surname)
+
+
+def run_menu(commands):
     command_index = word.menu_to_manage_tasks()
-    command = COMMANDS[command_index]
+    command = commands[command_index]
     command.run()
 
 def start_app():
@@ -38,52 +65,32 @@ def start_app():
 
     if answer == 'no':
         user = word.create_user(query.show_emails())
-        user_1 = query.create_user(user['name'], user['surname'], user['email'])
+        query.create_user(user['name'], user['surname'], user['email'])
+        user_name = user['name']
+        user_surname = user['surname']
 
     elif answer == 'yes':
         log_details = word.logon(user_registry)
-        user_name = log_details['name'][0]
-        user_surname = log_details['surname'][1]
+        user_name = log_details['name']
+        user_surname = log_details['surname']
 
+    commands = [
+        ExitCommand(),
+        NewTaskCommand(user_name, user_surname),
+        EditTaskCommand(),
+        ShowTasksCommand(user_name, user_surname),
+        ShowActiveTasksCommand(user_name, user_surname)
+    ]
 
     while True:
-        run_menu()
+        run_menu(commands)
 
-print(run)
-
-
-
-    # if task_menu == 1:
-    #     task = word.create_task()
-    #     user_task = query.create_task(task['created_at'], task['name'], task['description'], end_at=None)
-    #     user_task_2 = query.assign_task_to_user(user_task, user_name=user_name, user_surname=user_surname)
-    #     word.if_create_task_note()
-    #     word.create_task_note()
-    # return user_task_2
+print(start_app())
 
 
 
-# def run_words():
-#     account = word.create_account()
-#     if account == 'no':
-#         user = doit.create_user(query.show_emails())
-#         user_1 = query.create_user(user['name'], user['surname'], user['email'])
-#         task_menu = doit.activate_menu()
-#     elif account == 'yes':
-#         users_list = qu.show_users()
-#         log_details = doit.logon(users_list)
-#         user_name = log_details['name_surname'][0]
-#         user_surname = log_details['name_surname'][1]
-#         task_menu = doit.activate_menu()
-#
-#
-#     if task_menu == 1:
-#         task = doit.create_task()
-#         user_task = qu.create_task(task['created_at'], task['name'], task['description'], end_at=None)
-#         user_task_2 = qu.assign_task_to_user(user_task, user_name=user_name, user_surname=user_surname)
-#         doit.if_create_task_note()
-#         doit.create_task_note()
-#     return user_task_2
-#
-#
-# print(run_words())
+
+
+
+
+
