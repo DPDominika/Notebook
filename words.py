@@ -43,6 +43,7 @@ def logon(user_registry):
 #         name_surname = input('To logon write your name and surname: ')
 #     return {'name_surname': name_surname.split(' ')}
 
+
 def create_user(email_list):
     print('Create an account')
     name = input('name: ')
@@ -106,11 +107,29 @@ def menu_to_manage_tasks():
             return choice
 
 
-def edit_task():
+class CheckingIfTaskExist:
+
+    def contains(self, user_name, user_surname, task_id):
+        query = (model.Task
+            .select(model.Task, model.UserTask, model.User)
+            .join(model.UserTask)
+            .join(model.User)
+            .where(model.Task.id == task_id)
+            .where((model.User.name == user_name) & (model.User.surname == user_surname)))
+        for q in query:
+            return q.id
+
+
+def edit_task(task_existence, user_name, user_surname):
+    task_id = input('Write the task id of task you want to modify: ')
+    while not task_existence.contains(user_name, user_surname, task_id):
+        print("The task id don't exist")
+        task_id = input('Write the id of your task: ')
     description = input('Modify the task description: ')
     text = input('Modify the task note: ')
     end_at = input('Add the end date: ')
-    return {'description': description,
+    return {'task_id': task_id,
+            'description': description,
             'text': text,
             'ecd_at': end_at}
 

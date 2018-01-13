@@ -44,7 +44,7 @@ def show_all_tasks(name, surname):
     user = model.User.get((model.User.name == name) & (model.User.surname == surname))
     for task in user.task_users:
         lp += 1
-        print(lp, task.name, '-', task.description)
+        print('lp. {0}, task id: {1}, name: {2}, description: {3}'.format(lp, task.id, task.name, task.description))
 
 
 def show_active_tasks(name, surname):
@@ -57,7 +57,7 @@ def show_active_tasks(name, surname):
             .where(model.Task.end_at == None))
     for q in query:
         lp += 1
-        print(lp, q.name,'-', q.description)
+        print('lp. {0}, task id: {1}, name: {2}, description: {3}'.format(lp, q.id, q.name, q.description))
 
 
 def create_note_for_task(task_id, text):
@@ -92,11 +92,21 @@ def select_description(name, surname, task_name):
         return {'description': q.description,
                 'end_at': q.end_at}
 
+
 def update_description(name, surname, task_name, new_description):
     old_description = select_description(name, surname, task_name)
-    return model.Task.(description=new_description).where(model.Task.description == old_description['description'])
+    return model.Task(description=new_description).where(model.Task.description == old_description['description'])
 
 
+def contains(user_name, user_surname, task_id):  # działa
+    query = (model.Task
+            .select(model.Task, model.UserTask, model.User)
+            .join(model.UserTask)
+            .join(model.User)
+            .where(model.Task.id == task_id)
+            .where((model.User.name == user_name) & (model.User.surname == user_surname)))
+    for q in query:
+        print(q.id)
 
 
 # def show_users():
@@ -124,7 +134,6 @@ def update_description(name, surname, task_name, new_description):
 
 
 
-
 # create_user('Dominika', 'Pleśniak', 'dominika.plesniak@gmail.com')
 # create_task(date(2017,12,26), 'shopping', 'christmas shopping', None)
 # print(show_emails())
@@ -140,3 +149,5 @@ def update_description(name, surname, task_name, new_description):
 # print(show_all_tasks('Dominika', 'Pleśniak'))
 # print(show_active_tasks('Dominika', 'Pleśniak'))
 # print(update_description('Dominika', 'Pleśniak', 'shopping'))
+# print(contains('Dominika', 'Pleśniak', 26))
+

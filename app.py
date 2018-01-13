@@ -2,17 +2,18 @@ import sys
 import query as query
 import words as word
 
+
 class ExitCommand:
 
     def run(self):
         sys.exit(0)
+
 
 class NewTaskCommand:
 
     def __init__(self, user_name, user_surname):
         self.user_name = user_name
         self.user_surname = user_surname
-
 
     def run(self):
         task_word = word.create_task()
@@ -22,6 +23,7 @@ class NewTaskCommand:
         task_id = query.get_task_id(self.user_name, self.user_surname, task_word['name'])
         query.create_note_for_task(task_id, text)
 
+
 class EditTaskCommand:
 
     def __init__(self, user_name, user_surname):
@@ -29,8 +31,9 @@ class EditTaskCommand:
         self.user_surname = user_surname
 
     def run(self):
-        word.edit_task() # w części words dopisać wybór taska do modyfikacji
-        query.update_description(self.user_name, self.user_surname, task_name, new_description)
+        task_existence = word.CheckingIfTaskExist()
+        word.edit_task(task_existence, self.user_name, self.user_surname)
+        # query.update_description(self.user_name, self.user_surname, task_name, new_description)
 
 
 class ShowTasksCommand:
@@ -58,6 +61,7 @@ def run_menu(commands):
     command = commands[command_index]
     command.run()
 
+
 def start_app():
     user_registry = word.UserRegistryDB()
 
@@ -77,7 +81,7 @@ def start_app():
     commands = [
         ExitCommand(),
         NewTaskCommand(user_name, user_surname),
-        EditTaskCommand(),
+        EditTaskCommand(user_name, user_surname),
         ShowTasksCommand(user_name, user_surname),
         ShowActiveTasksCommand(user_name, user_surname)
     ]
