@@ -131,7 +131,7 @@ def edit_task(task_existence, user_name, user_surname):
     return {'task_id': task_id,
             'description': description,
             'text': text,
-            'ecd_at': end_at}
+            'end_at': end_at}
 
 
 

@@ -81,21 +81,28 @@ def show_emails():
     return email_list
 
 
-def select_description(name, surname, task_name):
-    query = (model.Task
-            .select(model.Task, model.UserTask, model.User)
-            .join(model.UserTask)
-            .join(model.User)
-            .where(model.Task.name == task_name)
-            .where(((model.User.name == name) & (model.User.surname == surname))))
-    for q in query:
-        return {'description': q.description,
-                'end_at': q.end_at}
+# def select_description(name, surname, task_id): # chyba nie będzie potrzebne
+#     query = (model.Task
+#             .select(model.Task, model.UserTask, model.User)
+#             .join(model.UserTask)
+#             .join(model.User)
+#             .where(model.Task.id == task_id)
+#             .where(((model.User.name == name) & (model.User.surname == surname))))
+#     for q in query:
+#         return {'description': q.description,
+#                 'end_at': q.end_at}
 
 
-def update_description(name, surname, task_name, new_description):
-    old_description = select_description(name, surname, task_name)
-    return model.Task(description=new_description).where(model.Task.description == old_description['description'])
+def update_description(new_description, task_id):
+    return model.Task.update(description=new_description).where(model.Task.id == task_id).execute()
+
+
+def update_text_note(text, task_id):
+    return model.Note.update(text=text).where(model.Note.task_id == task_id).execute()
+
+
+def update_end_at(end_at, task_id):
+    return model.Task.update(end_at=end_at).where(model.Task.id == task_id).execute()
 
 
 def contains(user_name, user_surname, task_id):  # działa

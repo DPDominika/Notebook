@@ -32,8 +32,10 @@ class EditTaskCommand:
 
     def run(self):
         task_existence = word.CheckingIfTaskExist()
-        word.edit_task(task_existence, self.user_name, self.user_surname)
-        # query.update_description(self.user_name, self.user_surname, task_name, new_description)
+        edited_task = word.edit_task(task_existence, self.user_name, self.user_surname)
+        query.update_description(edited_task['description'], edited_task['task_id'])
+        query.update_text_note(edited_task['text'], edited_task['task_id'])
+        query.update_end_at(edited_task['end_at'], edited_task['task_id'])
 
 
 class ShowTasksCommand:
