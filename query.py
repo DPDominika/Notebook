@@ -14,6 +14,13 @@ def create_user(name, surname, email):
     model.User.create(name=name, surname=surname, email=email)
 
 
+def show_emails():
+    email_list = []
+    for u in model.User.select():
+        email_list.append(u.email)
+    return email_list
+
+
 def create_task(created_at, name, description, end_at):
     return model.Task.create(created_at=created_at, name=name, description=description, end_at=end_at)
 
@@ -60,6 +67,19 @@ def show_active_tasks(name, surname):
         print('lp. {0}, task id: {1}, name: {2}, description: {3}'.format(lp, q.id, q.name, q.description))
 
 
+def show_finished_tasks(name, surname):
+    lp = 0
+    query = (model.Task
+            .select(model.Task, model.UserTask, model.User)
+            .join(model.UserTask)
+            .join(model.User)
+            .where((model.User.name == name) & (model.User.surname == surname))
+            .where(model.Task.end_at != None))
+    for q in query:
+        lp += 1
+        print('lp. {0}, task id: {1}, name: {2}, description: {3}'.format(lp, q.id, q.name, q.description))
+
+
 def create_note_for_task(task_id, text):
     try:
         user_task = model.UserTask.get(
@@ -74,25 +94,6 @@ def create_note_for_task(task_id, text):
     )
 
 
-def show_emails():
-    email_list = []
-    for u in model.User.select():
-        email_list.append(u.email)
-    return email_list
-
-
-# def select_description(name, surname, task_id): # chyba nie będzie potrzebne
-#     query = (model.Task
-#             .select(model.Task, model.UserTask, model.User)
-#             .join(model.UserTask)
-#             .join(model.User)
-#             .where(model.Task.id == task_id)
-#             .where(((model.User.name == name) & (model.User.surname == surname))))
-#     for q in query:
-#         return {'description': q.description,
-#                 'end_at': q.end_at}
-
-
 def update_description(new_description, task_id):
     return model.Task.update(description=new_description).where(model.Task.id == task_id).execute()
 
@@ -105,7 +106,7 @@ def update_end_at(end_at, task_id):
     return model.Task.update(end_at=end_at).where(model.Task.id == task_id).execute()
 
 
-def contains(user_name, user_surname, task_id):  # działa
+def contains(user_name, user_surname, task_id):
     query = (model.Task
             .select(model.Task, model.UserTask, model.User)
             .join(model.UserTask)
@@ -116,45 +117,15 @@ def contains(user_name, user_surname, task_id):  # działa
         print(q.id)
 
 
-# def show_users():
-#     users_list = []
-#     for u in model.User.select():
-#         user = u.name, u.surname
-#         user_join = ' '.join(user)
-#         users_list.append(user_join)
-#     return users_list
+def delete_task(user_name, user_surname, task_id):
+    query = (model.Task
+            .select(model.Task, model.UserTask, model.User)
+            .join(model.UserTask)
+            .join(model.User)
+            .where(model.Task.id == task_id)
+            .where((model.User.name == user_name) & (model.User.surname == user_surname)))
+    for q in query:
+        return q.delete_instance()
 
 
-# def select_user(name, surname):
-#     return model.User.select((model.User.name == name) & (model.User.surname == surname))
-
-# def create_note():
-
-
-# def check_if_exist(email):
-#     try:
-#         mail = model.User.get(email=email)
-#     except UserDoesNotExist:
-#         return False
-
-
-
-
-
-# create_user('Dominika', 'Pleśniak', 'dominika.plesniak@gmail.com')
-# create_task(date(2017,12,26), 'shopping', 'christmas shopping', None)
-# print(show_emails())
-# print(check_if_exist(email='dkromka@gmail.com'))
-# print(show_users())
-# print(select_user('Dominika', 'Plesniak'))
-# task = create_task(date(2017,1,11), 'new_task_2', 'description_2', None)
-# assign_task_to_user(task, 'anna', 'libura')
-# create_note_for_task(1, 'note for task nr 1 user 2')
-# print(get_task_id('anna', 'libura', 'shopping'))
-#print(get_task_users('shopping'))
-# print(get_task_id('Katarzyna', 'Koba', 'shopping'))
-# print(show_all_tasks('Dominika', 'Pleśniak'))
-# print(show_active_tasks('Dominika', 'Pleśniak'))
-# print(update_description('Dominika', 'Pleśniak', 'shopping'))
-# print(contains('Dominika', 'Pleśniak', 26))
 

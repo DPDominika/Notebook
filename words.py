@@ -36,13 +36,6 @@ def logon(user_registry):
     return {'name': name,
             'surname': surname}
 
-# def logon(users_list):
-#     name_surname = input('To logon write your name and surname: ')
-#     while name_surname not in users_list:
-#         print("The user don't exist")
-#         name_surname = input('To logon write your name and surname: ')
-#     return {'name_surname': name_surname.split(' ')}
-
 
 def create_user(email_list):
     print('Create an account')
@@ -120,28 +113,54 @@ class CheckingIfTaskExist:
             return q.id
 
 
-def edit_task(task_existence, user_name, user_surname):
+def get_task_id(task_existence, user_name, user_surname):
     task_id = input('Write the task id of task you want to modify: ')
     while not task_existence.contains(user_name, user_surname, task_id):
         print("The task id don't exist")
         task_id = input('Write the id of your task: ')
-    description = input('Modify the task description: ')
-    text = input('Modify the task note: ')
-    end_at = input('Add the end date: ')
-    return {'task_id': task_id,
-            'description': description,
-            'text': text,
-            'end_at': end_at}
+    return task_id
 
 
+def ask_about_edit_description():
+    answer = input('Do you want to edit task description?: ')
+    while answer.lower() != 'yes' and answer.lower() != 'no':
+        print("Please, answer 'yes' or 'no'")
+        answer = input('Do you want to edit task description?: ')
+    return answer
 
-# print(activate_menu())
-# print(logon(['Dominika Pleśniak', 'Jan Kowalski']))
-# user = logon(['Dominika Pleśniak', 'Jan Kowalski'])
-# print(user)
-# user_registry = UserRegistryDB()
-# print(logon(user_registry))
-# print(create_task())
-# print(create_task_note())
-# print(ask_create_task_note())
-# print(menu_to_manage_tasks())
+
+def ask_about_edit_note():
+    answer = input('Do you want to edit task note?: ')
+    while answer.lower() != 'yes' and answer.lower() != 'no':
+        print("Please, answer 'yes' or 'no'")
+        answer = input('Do you want to edit task note?: ')
+    return answer
+
+
+def ask_about_end_at():
+    answer = input('Do you want to end the task?: ')
+    while answer.lower() != 'yes' and answer.lower() != 'no':
+        print("Please, answer 'yes' or 'no'")
+        answer = input('Do you want to end the task?: ')
+    return answer
+
+
+def edit_description():
+    return input('Modify the task description: ')
+
+
+def edit_note():
+    return input('Modify the task note: ')
+
+
+def add_end_at():
+    return input('Add the end date: ')
+
+
+def get_task_id_to_delete(task_existence, user_name, user_surname):
+    task_id = input('Write the task id of task you want to delete: ')
+    while not task_existence.contains(user_name, user_surname, task_id):
+        print("The task id don't exist")
+        task_id = input('Write the id of your task: ')
+    return task_id
+

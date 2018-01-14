@@ -32,10 +32,28 @@ class EditTaskCommand:
 
     def run(self):
         task_existence = word.CheckingIfTaskExist()
-        edited_task = word.edit_task(task_existence, self.user_name, self.user_surname)
-        query.update_description(edited_task['description'], edited_task['task_id'])
-        query.update_text_note(edited_task['text'], edited_task['task_id'])
-        query.update_end_at(edited_task['end_at'], edited_task['task_id'])
+        task_id = word.get_task_id(task_existence, self.user_name, self.user_surname)
+
+        descript_answer = word.ask_about_edit_description()
+        if descript_answer == 'no':
+            pass
+        elif descript_answer == 'yes':
+            description = word.edit_description()
+            query.update_description(description, task_id)
+
+        note_answer = word.ask_about_edit_note()
+        if note_answer == 'no':
+            pass
+        elif note_answer == 'yes':
+            text = word.edit_note()
+            query.update_text_note(text, task_id)
+
+        end_at_answer = word.ask_about_end_at()
+        if end_at_answer == 'no':
+            pass
+        elif end_at_answer == 'yes':
+            end_at = word.add_end_at()
+            query.update_end_at(end_at, task_id)
 
 
 class ShowTasksCommand:
@@ -56,6 +74,28 @@ class ShowActiveTasksCommand:
 
     def run(self):
         query.show_active_tasks(self.user_name, self.user_surname)
+
+
+class ShowFinishedTasksCommand:
+
+    def __init__(self, user_name, user_surname):
+        self.user_name = user_name
+        self.user_surname = user_surname
+
+    def run(self):
+        query.show_finished_tasks(self.user_name, self.user_surname)
+
+
+class DeleteTaskCommand:
+
+    def __init__(self, user_name, user_surname):
+        self.user_name = user_name
+        self.user_surname = user_surname
+
+    def run(self):
+        task_existence = word.CheckingIfTaskExist()
+        task_id = word.get_task_id_to_delete(task_existence, self.user_name, self.user_surname)
+        query.delete_task(self.user_name, self.user_surname, task_id)
 
 
 def run_menu(commands):
@@ -85,11 +125,14 @@ def start_app():
         NewTaskCommand(user_name, user_surname),
         EditTaskCommand(user_name, user_surname),
         ShowTasksCommand(user_name, user_surname),
-        ShowActiveTasksCommand(user_name, user_surname)
+        ShowActiveTasksCommand(user_name, user_surname),
+        ShowFinishedTasksCommand(user_name, user_surname),
+        DeleteTaskCommand(user_name, user_surname)
     ]
 
     while True:
         run_menu(commands)
+
 
 print(start_app())
 
