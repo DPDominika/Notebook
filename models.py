@@ -1,11 +1,6 @@
-from datetime import date
-# import logging
-# logger = logging.getLogger('peewee')
-# logger.setLevel(logging.DEBUG)
-# logger.addHandler(logging.StreamHandler())
 from peewee import *
 from playhouse.fields import ManyToManyField
-from decimal import Decimal
+
 
 db = SqliteDatabase('DP_note.db')
 
@@ -28,7 +23,9 @@ class Task(BaseModel):
     end_at = DateField(null=True)
     users = ManyToManyField(User, related_name='task_users')
 
+
 UserTask = Task.users.get_through_model()
+
 
 class Note(BaseModel):
     text = TextField()

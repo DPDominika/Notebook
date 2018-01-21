@@ -30,30 +30,39 @@ class EditTaskCommand:
         self.user_name = user_name
         self.user_surname = user_surname
 
-    def run(self):
-        task_existence = word.CheckingIfTaskExist()
-        task_id = word.get_task_id(task_existence, self.user_name, self.user_surname)
+    def _get_task(self):
+        self.task_existence = word.CheckingIfTaskExist()
+        return word.get_task_id(self.task_existence, self.user_name, self.user_surname)
 
-        descript_answer = word.ask_about_edit_description()
+    def _process_task_description(self, task):
+        descript_answer = word.get_user_yesno(info='Do you want to edit task description?: ')
         if descript_answer == 'no':
             pass
         elif descript_answer == 'yes':
             description = word.edit_description()
-            query.update_description(description, task_id)
+            query.update_description(description, task)
 
-        note_answer = word.ask_about_edit_note()
+    def _process_task_note(self, task):
+        note_answer = word.get_user_yesno(info='Do you want to edit task note?: ')
         if note_answer == 'no':
             pass
         elif note_answer == 'yes':
             text = word.edit_note()
-            query.update_text_note(text, task_id)
+            query.update_text_note(text, task)
 
-        end_at_answer = word.ask_about_end_at()
+    def _process_task_end(self, task):
+        end_at_answer = word.get_user_yesno(info='Do you want to end the task?: ')
         if end_at_answer == 'no':
             pass
         elif end_at_answer == 'yes':
             end_at = word.add_end_at()
-            query.update_end_at(end_at, task_id)
+            query.update_end_at(end_at, task)
+        
+    def run(self):
+        task = self._get_task()
+        self._process_task_description(task)
+        self._process_task_note(task)
+        self._process_task_end(task)
 
 
 class ShowTasksCommand:
@@ -73,7 +82,8 @@ class ShowActiveTasksCommand:
         self.user_surname = user_surname
 
     def run(self):
-        query.show_active_tasks(self.user_name, self.user_surname)
+        active_tasks = query.get_active_tasks(name=self.user_name, surname=self.user_surname)
+        query.display_active_tasks(active_tasks)
 
 
 class ShowFinishedTasksCommand:
@@ -83,7 +93,8 @@ class ShowFinishedTasksCommand:
         self.user_surname = user_surname
 
     def run(self):
-        query.show_finished_tasks(self.user_name, self.user_surname)
+        finished_tasks = query.get_finished_tasks(name=self.user_name, surname=self.user_surname)
+        query.display_finished_tasks(finished_tasks)
 
 
 class DeleteTaskCommand:
@@ -134,7 +145,6 @@ def start_app():
         run_menu(commands)
 
 
-print(start_app())
 
 
 

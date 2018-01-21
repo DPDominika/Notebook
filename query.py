@@ -5,6 +5,7 @@ from datetime import date
 # logger.addHandler(logging.StreamHandler())
 import models as model
 
+
 def create_tables():
     model.db.connect()
     model.db.create_tables([model.User, model.Task, model.UserTask, model.Note], True)
@@ -54,30 +55,38 @@ def show_all_tasks(name, surname):
         print('lp. {0}, task id: {1}, name: {2}, description: {3}'.format(lp, task.id, task.name, task.description))
 
 
-def show_active_tasks(name, surname):
-    lp = 0
-    query = (model.Task
+def get_active_tasks(name, surname):
+    active_tasks = (model.Task
             .select(model.Task, model.UserTask, model.User)
             .join(model.UserTask)
             .join(model.User)
             .where((model.User.name == name) & (model.User.surname == surname))
             .where(model.Task.end_at == None))
-    for q in query:
-        lp += 1
-        print('lp. {0}, task id: {1}, name: {2}, description: {3}'.format(lp, q.id, q.name, q.description))
+    return active_tasks
 
 
-def show_finished_tasks(name, surname):
+def display_active_tasks(active_tasks):
     lp = 0
-    query = (model.Task
+    for task in active_tasks:
+        lp += 1
+        print('lp. {0}, task id: {1}, name: {2}, description: {3}'.format(lp, task.id, task.name, task.description))
+
+
+def get_finished_tasks(name, surname):
+    finished_tasks = (model.Task
             .select(model.Task, model.UserTask, model.User)
             .join(model.UserTask)
             .join(model.User)
             .where((model.User.name == name) & (model.User.surname == surname))
             .where(model.Task.end_at != None))
-    for q in query:
+    return finished_tasks
+
+
+def display_finished_tasks(finished_tasks):
+    lp = 0
+    for task in finished_tasks:
         lp += 1
-        print('lp. {0}, task id: {1}, name: {2}, description: {3}'.format(lp, q.id, q.name, q.description))
+        print('lp. {0}, task id: {1}, name: {2}, description: {3}'.format(lp, task.id, task.name, task.description))
 
 
 def create_note_for_task(task_id, text):

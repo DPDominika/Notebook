@@ -16,16 +16,6 @@ class UserRegistryDB:
         return model.User.select().where((model.User.name == name) & (model.User.surname == surname))
 
 
-# class UserRegistry:
-#
-#     def __init__(self, user_list):
-#         self.user_list = user_list
-#
-#     def contains(self, surname):
-#         users = [user for user in self.user_list if user.surname == surname]
-#         return len(users) >= 1
-
-
 def logon(user_registry):
     name = input('To logon write your name: ')
     surname = input('To logon write your surname: ')
@@ -121,27 +111,11 @@ def get_task_id(task_existence, user_name, user_surname):
     return task_id
 
 
-def ask_about_edit_description():
-    answer = input('Do you want to edit task description?: ')
+def get_user_yesno(info):
+    answer = input(info)
     while answer.lower() != 'yes' and answer.lower() != 'no':
         print("Please, answer 'yes' or 'no'")
-        answer = input('Do you want to edit task description?: ')
-    return answer
-
-
-def ask_about_edit_note():
-    answer = input('Do you want to edit task note?: ')
-    while answer.lower() != 'yes' and answer.lower() != 'no':
-        print("Please, answer 'yes' or 'no'")
-        answer = input('Do you want to edit task note?: ')
-    return answer
-
-
-def ask_about_end_at():
-    answer = input('Do you want to end the task?: ')
-    while answer.lower() != 'yes' and answer.lower() != 'no':
-        print("Please, answer 'yes' or 'no'")
-        answer = input('Do you want to end the task?: ')
+        answer = input(info)
     return answer
 
 
